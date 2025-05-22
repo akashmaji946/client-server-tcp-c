@@ -53,7 +53,9 @@ int main(int argc, char *argv[]) {
     }
 
     // connect successfully
+    printf(GREEN);
     printf(">>> Connected to server at [%s:%d] <<< \n", server_ip, port);
+    printf(RESET);
 
     // buffer to store the message
     char buffer[MAX_MESSAGE_LENGTH];
@@ -76,7 +78,9 @@ int main(int argc, char *argv[]) {
 
     while(bytes_read > 0) {
         // print the message received from the client
+        printf(CYAN);
         printf("Server: %s\n", message_to_receive);
+        printf(RESET);
 
         // get the input from stdin
         bzero(buffer, MAX_MESSAGE_LENGTH);

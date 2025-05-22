@@ -17,19 +17,26 @@
 #define MAX_MESSAGE_LENGTH 1024
 #define LOCALHOST "127.0.0.1"
 
-
-typedef struct {
-    int client_id;
-    char message[MAX_MESSAGE_LENGTH];
-} Message;
+// define colors
+#define RED "\033[31m"
+#define GREEN "\033[32m"
+#define YELLOW "\033[33m"
+#define BLUE "\033[34m"
+#define MAGENTA "\033[35m"
+#define CYAN "\033[36m"
+#define RESET "\033[0m"
 
 void panic(const char *message) {
+    printf(RED);
     perror(message);
+    printf(RESET);
     fflush(stdout);
     exit(1);
 }
 void relax(const char *message) {
+    printf(MAGENTA);
     printf("%s\n", message);
+    printf(RESET);
     fflush(stdout);
 }
 

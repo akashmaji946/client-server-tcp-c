@@ -55,8 +55,13 @@ int main(int argc, char *argv[]) {
     }
 
     // server is up
+    printf(GREEN);
     printf(">>> Server is up at [127.0.0.1:%d] <<<\n", port);
+    printf(RESET);
+
+    printf(YELLOW);
     printf(">>> Listening for incoming connections... <<<\n\n");
+    printf(RESET);
 
     // accept incoming connections
     int client_fd;
@@ -89,7 +94,9 @@ int main(int argc, char *argv[]) {
 
     while(bytes_read > 0) {
         // print the message received from the client
+        printf(CYAN);
         printf("Client: %s\n", message_to_receive);
+        printf(RESET);
 
         // get the input from stdin
         bzero(buffer, MAX_MESSAGE_LENGTH);
