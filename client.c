@@ -53,17 +53,52 @@ int main(int argc, char *argv[]) {
     }
 
     // connect successfully
-    printf("Connected to server\n");
+    printf(">>> Connected to server at [%s:%d] <<< \n", server_ip, port);
 
-    // send a message to the server
-    char message[MAX_MESSAGE_LENGTH];
-    bzero(message, MAX_MESSAGE_LENGTH);
-    sprintf(message, "Hello, server!");
+    // buffer to store the message
+    char buffer[MAX_MESSAGE_LENGTH];
+    bzero(buffer, MAX_MESSAGE_LENGTH);
+    // buffer to store the message to receive from the client
+    char message_to_receive[MAX_MESSAGE_LENGTH];
+    bzero(message_to_receive, MAX_MESSAGE_LENGTH);
+    // buffer to store the message to send to the client
+    char message_to_send[MAX_MESSAGE_LENGTH];
+    bzero(message_to_send, MAX_MESSAGE_LENGTH);
 
+
+    int bytes_read;
     int bytes_written;
-    bytes_written = write(client_fd, message, strlen(message));
-    if(bytes_written < 0) {
-        panic("Failed to send message to server");
+
+    // bytes_read = read(client_fd, message_to_receive, MAX_MESSAGE_LENGTH);
+    strncpy(message_to_receive, "> Begin conversation by sending a message to the server. <\
+    \n( Press Enter to send a message. Press Ctrl+C to exit )\n", MAX_MESSAGE_LENGTH);
+    bytes_read = strlen(message_to_receive);
+
+    while(bytes_read > 0) {
+        // print the message received from the client
+        printf("Server: %s\n", message_to_receive);
+
+        // get the input from stdin
+        bzero(buffer, MAX_MESSAGE_LENGTH);
+        fgets(buffer, MAX_MESSAGE_LENGTH, stdin);
+        // send the message to the client
+        bzero(message_to_send, MAX_MESSAGE_LENGTH);
+        sprintf(message_to_send, "%s", buffer);
+        bytes_written = write(client_fd, message_to_send, strlen(message_to_send));
+        if(bytes_written < 0) {
+            panic("Failed to send message to server");
+        }
+
+        // read the next message
+        bzero(message_to_receive, MAX_MESSAGE_LENGTH);
+        bytes_read = read(client_fd, message_to_receive, MAX_MESSAGE_LENGTH);
+    }
+
+    // check if the read was unsuccessful or the client disconnected
+    if(bytes_read < 0) {
+        panic("Failed to read message from server");
+    }else if(bytes_read == 0) {
+        relax("Server disconnected");
     }
 
     close(client_fd);

@@ -14,6 +14,7 @@ int main(int argc, char *argv[]) {
     if(port < 0 || port > 65535) {
         panic("Invalid port number");
     }
+    // printf(">>> Starting server... <<<\n");
 
     // create a socket (endpoint) for server
     // use AF_INET for IPv4
@@ -52,7 +53,10 @@ int main(int argc, char *argv[]) {
     if(listen_success < 0) {
         panic("Failed to listen for incoming connections");
     }
-    relax("Server is listening for incoming connections");
+
+    // server is up
+    printf(">>> Server is up at [127.0.0.1:%d] <<<\n", port);
+    printf(">>> Listening for incoming connections... <<<\n\n");
 
     // accept incoming connections
     int client_fd;
@@ -92,7 +96,7 @@ int main(int argc, char *argv[]) {
         fgets(buffer, MAX_MESSAGE_LENGTH, stdin);
         // send the message to the client
         bzero(message_to_send, MAX_MESSAGE_LENGTH);
-        sprintf(message_to_send, "Server: %s\n", buffer);
+        sprintf(message_to_send, "%s", buffer);
         bytes_written = write(client_fd, message_to_send, strlen(message_to_send));
         if(bytes_written < 0) {
             panic("Failed to send message to client");

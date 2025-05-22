@@ -17,6 +17,7 @@
 #define MAX_MESSAGE_LENGTH 1024
 #define LOCALHOST "127.0.0.1"
 
+
 typedef struct {
     int client_id;
     char message[MAX_MESSAGE_LENGTH];
@@ -24,10 +25,12 @@ typedef struct {
 
 void panic(const char *message) {
     perror(message);
+    fflush(stdout);
     exit(1);
 }
 void relax(const char *message) {
     printf("%s\n", message);
+    fflush(stdout);
 }
 
 void bzero(void *s, size_t n) {
