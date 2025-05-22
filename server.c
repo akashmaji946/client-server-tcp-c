@@ -14,6 +14,7 @@ int main(int argc, char *argv[]) {
     if(port < 0 || port > 65535) {
         panic("Invalid port number");
     }
+    // printf(">>> Starting server... <<<\n");
 
     // create a socket (endpoint) for server
     // use AF_INET for IPv4
@@ -52,7 +53,10 @@ int main(int argc, char *argv[]) {
     if(listen_success < 0) {
         panic("Failed to listen for incoming connections");
     }
-    relax("Server is listening for incoming connections");
+
+    // server is up
+    printf(">>> Server is up at [127.0.0.1:%d] <<<\n", port);
+    printf(">>> Listening for incoming connections... <<<\n\n");
 
     // accept incoming connections
     int client_fd;
@@ -70,16 +74,37 @@ int main(int argc, char *argv[]) {
     // buffer to store the message
     char buffer[MAX_MESSAGE_LENGTH];
     bzero(buffer, MAX_MESSAGE_LENGTH);
-    // read the message from the client
+    // buffer to store the message to receive from the client
+    char message_to_receive[MAX_MESSAGE_LENGTH];
+    bzero(message_to_receive, MAX_MESSAGE_LENGTH);
+    // buffer to store the message to send to the client
+    char message_to_send[MAX_MESSAGE_LENGTH];
+    bzero(message_to_send, MAX_MESSAGE_LENGTH);
+
+
     int bytes_read;
-    bytes_read = read(client_fd, buffer, MAX_MESSAGE_LENGTH);
+    int bytes_written;
+
+    bytes_read = read(client_fd, message_to_receive, MAX_MESSAGE_LENGTH);
 
     while(bytes_read > 0) {
-        // print the message
-        printf("Client: %s\n", buffer);
-        // read the next message
+        // print the message received from the client
+        printf("Client: %s\n", message_to_receive);
+
+        // get the input from stdin
         bzero(buffer, MAX_MESSAGE_LENGTH);
-        bytes_read = read(client_fd, buffer, MAX_MESSAGE_LENGTH);
+        fgets(buffer, MAX_MESSAGE_LENGTH, stdin);
+        // send the message to the client
+        bzero(message_to_send, MAX_MESSAGE_LENGTH);
+        sprintf(message_to_send, "%s", buffer);
+        bytes_written = write(client_fd, message_to_send, strlen(message_to_send));
+        if(bytes_written < 0) {
+            panic("Failed to send message to client");
+        }
+
+        // read the next message
+        bzero(message_to_receive, MAX_MESSAGE_LENGTH);
+        bytes_read = read(client_fd, message_to_receive, MAX_MESSAGE_LENGTH);
     }
 
     // check if the read was unsuccessful or the client disconnected
@@ -93,4 +118,5 @@ int main(int argc, char *argv[]) {
     close(client_fd);
     close(server_fd);
     
+    return 0;
 }
