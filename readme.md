@@ -24,6 +24,6 @@ from_client.png
 ![Client](from_client.png)
 
 #### Contact:
-@author: Akash
+@author: Akash Maji\
 @email: akashmaji@iisc.ac.in
 
